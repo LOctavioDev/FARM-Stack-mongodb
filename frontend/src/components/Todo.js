@@ -2,11 +2,15 @@ import axios from "axios";
 import React from "react";
 
 function TodoItem(props) {
-  const deleteTodoHandler = (title) => {
-    axios
-      .delete(`http://127.0.0.1:11111/api/todo/${title}`)
-      .then((res) => console.log(res.data))
-  }
+    const deleteTodoHandler = (title) => {
+        axios
+          .delete(`http://127.0.0.1:11111/api/todo/${title}`)
+          .then((res) => {
+            console.log(res.data);
+            props.loadTodos();  
+          })
+          .catch((error) => console.error('Error deleting todo:', error));
+      };
 
   return (
     <div>
@@ -15,6 +19,7 @@ function TodoItem(props) {
           {props.todo.title}:<br></br>
         </span>
         {props.todo.description}
+
         <button
           onClick={() => deleteTodoHandler(props.todo.title)}
           className="btn btn-outline-danger my-2 mx-2"

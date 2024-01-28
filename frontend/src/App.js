@@ -10,7 +10,7 @@ function App() {
   const [desc, setDesc] = useState('');
 
   // READ ALL TODOS
-  useEffect(() => {
+  const loadTodos = () => {
     axios.get('http://127.0.0.1:11111/api/todo')
       .then(result => {
         setTodoList(result.data);
@@ -18,12 +18,19 @@ function App() {
       .catch(error => {
         console.error('Error fetching data:', error);
       });
+  };
+
+  useEffect(() => {
+    loadTodos()
   }, []);
 
   // POST A TODO
   const addTodoHandler = () => {
     axios.post('http://127.0.0.1:11111/api/todo', { 'title': title, 'description': desc })
-      .then(result => console.log(result))
+      .then(result => {
+        console.log(result)
+        loadTodos()
+      })
       .catch(error => {
         console.error('Error adding todo:', error);
       });
@@ -44,7 +51,7 @@ function App() {
 
         <h5 className='card text-white bg-dark mb-3'> Your Tasks</h5>
         <div>
-          <TodoView todoList = {todoList} />
+          <TodoView todoList = {todoList} loadTodos={loadTodos} />
         </div>
 
       </div>
