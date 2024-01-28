@@ -7,13 +7,14 @@ app = FastAPI()
 
 from database import (fetch_one_todo, fetch_all, create_todo, update_new_todo, remove_todo)
 
-origins = ['http://localhost:11111']
+origins = ['http://localhost:3000']
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins = origins,
     allow_credentials = True,
-    allow_methods = ["*"],   
-    allow_headers = ["*"]   
+    allow_methods=["*"],   
+    allow_headers = ["*"],  
 )
 
 

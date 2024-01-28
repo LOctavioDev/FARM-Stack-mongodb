@@ -1,16 +1,33 @@
 import './App.css';
 import React, {useState, useEffect} from 'react';
-import { Axios } from 'axios';
+import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import TodoView from './components/TodoListViews';
 
 function App() {
+  const [todoList, setTodoList] = useState([]);
+  const [title, setTitle] = useState('');
+  const [desc, setDesc] = useState('');
 
-  const [todoList, setTodoList] = useState([{}])
-  const [title, setTile] = useState('')
-  const [desc, setDesc] = useState('')
+  // READ ALL TODOS
+  useEffect(() => {
+    axios.get('http://127.0.0.1:11111/api/todo')
+      .then(result => {
+        setTodoList(result.data);
+      })
+      .catch(error => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
 
-  //READ ALL TODOS
-
+  // POST A TODO
+  const addTodoHandler = () => {
+    axios.post('http://127.0.0.1:11111/api/todo', { 'title': title, 'description': desc })
+      .then(result => console.log(result))
+      .catch(error => {
+        console.error('Error adding todo:', error);
+      });
+  };
 
   return (
       <div className='App list-group-item justify-content-center align-items-center mx-auto' style={{"width": "400px", "backgroundColor": "white", "marginTop": "15px"}}>
@@ -19,15 +36,15 @@ function App() {
       <div className='card-body'>
         <h5 className='card text-white bg-dark mb-3'>Add Your Task</h5>
         <span className='card-text'>
-          <input className='mb-2 form-control titleIn' placeholder='Title'/>
-          <input className='mb-2 form-control desIn mb-2' placeholder='Description'/>
-          <button className='btn btn-outline-primary mx-3 mb-3' style={{'borderRadius': '50px', 'font-weight': 'bold'}}> Add Task</button>
+          <input className='mb-2 form-control titleIn' placeholder='Title' onChange={event => setTitle(event.target.value)} />
+          <input className='mb-2 form-control desIn mb-2' placeholder='Description' onChange={event => setDesc(event.target.value)}/>
+          <button className='btn btn-outline-primary mx-3 mb-3' style={{'borderRadius': '50px', 'fontWeight': 'bold'}} onClick={addTodoHandler}> Add Task</button>
 
         </span>
 
-        <h5 className='card text-white bg-dark mb-3'> Yout Tasks</h5>
+        <h5 className='card text-white bg-dark mb-3'> Your Tasks</h5>
         <div>
-          {/* {TODO EXTERNAL COMPONENTS} */}
+          <TodoView todoList = {todoList} />
         </div>
 
       </div>
